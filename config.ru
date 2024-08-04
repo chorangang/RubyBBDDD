@@ -1,12 +1,14 @@
 require 'rack'
-require 'roda'
+require 'rack/reloader'
+require './src/app'
+require './src/middleware/error_handling_middleware'
 
-class App < Roda
-    route do |r|
-        r.root do
-            "Hello, world!"
-            end
-    end
-end
+# .envファイルを読み込む
+Dotenv.load
 
-run App
+# 例外をキャッチするミドルウェア
+use ErrorHandlingMiddleware
+
+use Rack::Reloader, 0
+
+run App.new

@@ -4,4 +4,8 @@ source "https://rubygems.org"
 
 gem 'puma'
 gem 'rack'
-gem 'roda'
+gem 'guard'
+gem 'guard-puma'
+gem 'mysql2'
+gem 'dotenv'
+gem 'bcrypt'
