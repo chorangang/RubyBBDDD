@@ -1,5 +1,3 @@
-require './src/error/invalid_argument_error'
-
 class Password
   attr_reader :password
 

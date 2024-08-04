@@ -6,13 +6,11 @@ class Serializer
     @status = status
     @headers = headers
 
-    if body[:message]
-      @body = { message: body[:message] }
-    end
-
     if body[:status]
       @status = body[:status]
     end
+
+    pp @body
 
     return [ [@body.to_json], @status, @headers]
   end

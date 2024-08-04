@@ -1,16 +1,15 @@
 require 'time'
 require './src/infrastructure/repository/user_repository'
-require './src/error/invalid_argument_error'
+require './src/domain/service/auth_service'
 require './src/domain/value_objects/user/name'
 require './src/domain/value_objects/user/email'
 require './src/domain/value_objects/user/password'
-require './src/domain/service/user_domain_service'
 
 class User
     attr_accessor :id, :name, :email, :password, :created_at, :updated_at
 
     def initialize(request_hash)
-        @user_domain_service = UserDomainService.new
+        @auth_service = AuthService.new
         @repo = UserRepository.new
 
         @id = request_hash['id']
@@ -23,14 +22,39 @@ class User
 
     def save
         # 値オブジェクトから値を取り出す
-        @name = @name.name
-        @email = @email.email
-        @password = @user_domain_service.hash(@password.password)
-
+        set_values(password_hashing: true)
         @repo.save(self)
     end
 
+    def login
+        set_values(password_hashing: false)
+        user = @repo.find(self)
+        @auth_service.verify(@password, user['password'])
+    end
+
     private
+
+    def set_values(password_hashing: false)
+        set_name_value
+        set_email_value
+        set_password_value(hashing: password_hashing)
+    end
+
+    def set_name_value
+        @name = @name.name
+    end
+
+    def set_email_value
+        @email = @email.email
+    end
+
+    def set_password_value(hashing: false)
+        if hashing
+            @password = @auth_service.hash(@password.password)
+        else
+            @password = @password.password
+        end
+    end
 
     def set_now
         now = Time.now

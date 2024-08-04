@@ -10,6 +10,9 @@ class ErrorHandlingMiddleware
     rescue StandardError => e
       p "===== Caught an error: #{e.message} ====="
       error_response(e)
+    rescue NoMethodError => e
+      p "===== Caught an NoMethodError: #{e.message} ====="
+      error_response(e)
     rescue Mysql2::Error => e
       p "===== Caught an Mysql2::Error: #{e.message} ====="
       error_response(e)
@@ -22,7 +25,7 @@ class ErrorHandlingMiddleware
     [
       500,
       { 'Content-Type' => 'application/json' },
-      [{ status: 500, error: error.message }.to_json]
+      [{ error: error.message }.to_json]
     ]
   end
 end

@@ -1,5 +1,3 @@
-require './src/error/invalid_argument_error'
-
 class Email
   attr_reader :email
 

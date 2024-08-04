@@ -1,6 +1,6 @@
 require 'bcrypt'
 
-class UserDomainService
+class AuthService
   # Passwordのハッシュ化
   def hash(password)
     BCrypt::Password.create(password)

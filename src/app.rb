@@ -2,7 +2,7 @@ require 'json'
 require 'dotenv'
 require './src//routes/router'
 require './src//routes/routes'
-require './src//ui/controllers/auth_controller'
+require './src/interface/controllers/auth_controller'
 
 class App
     def call(env)
