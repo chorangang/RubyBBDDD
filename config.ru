@@ -1,12 +1,19 @@
 require 'rack'
-require 'roda'
+require 'rack/reloader'
+require './src/app'
+require './src/interface/middleware/error_handling_middleware'
+require './src/interface/middleware/jwt_auth_middleware'
 
-class App < Roda
-    route do |r|
-        r.root do
-            "Hello, world!"
-            end
-    end
-end
+# リロードのためのミドルウェア
+use Rack::Reloader, 0
 
-run App
+# .envファイルを読み込む
+Dotenv.load
+
+# 例外をキャッチするミドルウェア
+use ErrorHandlingMiddleware
+
+# JWT認証のためのミドルウェア
+use JwtAuthMiddleware
+
+run App.new
