@@ -10,12 +10,12 @@ class User
 
     def initialize(request_hash)
         @auth_service = AuthService.new
-        @repo = UserRepository.new
+        @repo         = UserRepository.new
 
-        @id = request_hash['id']
-        @name = Name.new(request_hash['name'])
-        @email = Email.new(request_hash['email'])
-        @password = Password.new(request_hash['password'])
+        @id         = request_hash['id']
+        @name       = Name.new(request_hash['name'])
+        @email      = Email.new(request_hash['email'])
+        @password   = Password.new(request_hash['password'])
         @created_at = request_hash['created_at'] || set_now
         @updated_at = request_hash['updated_at'] || set_now
     end

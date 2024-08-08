@@ -2,13 +2,14 @@ require 'jwt'
 require 'json'
 require './src/modules/secrets_loader'
 require './src/routes/routes'
+require './src/application/usecase/auth_service'
 
 class JwtAuthMiddleware
   def initialize(app)
+    pp "===== jwt_auth_middleware ====="
     @app = app
     @skip_paths = SKIP_PATHS
-    pp "=== skip_auth_paths ==="
-    pp @skip_paths
+    @auth_service = AuthService.new
   end
 
   def call(env)
@@ -38,7 +39,17 @@ class JwtAuthMiddleware
       # Module:SecretsLoaderを利用して環境変数を読み込む
       secrets = SecretsLoader.load
       # JWTトークンを検証
-      JWT.decode(token, secrets.private_key, 'RS256')
+      decoded = JWT.decode(token, secrets.private_key, 'RS256')
+  
+      # トークンの有効期限を確認
+      if decoded.first['expired'] < Time.now.to_i
+        return unauthorized_response(msg: 'Token expired')
+      end
+
+      # ブラックリストにないか確認
+      if @auth_service.authenticate(token)
+        return unauthorized_response(msg: 'Token revoked')
+      end
     rescue JWT::DecodeError
       return unauthorized_response
     end
@@ -46,9 +57,12 @@ class JwtAuthMiddleware
     @app.call(env)
   end
 
+
   private
 
-  def unauthorized_response
-    return [401, { 'Content-Type' => 'application/json' }, [{ message: 'Unauthorized' }.to_json]]
+  def unauthorized_response(msg: 'Unauthorized')
+    jwt = env['HTTP_AUTHORIZATION']
+    @auth_service.logout(jwt)
+    return [401, { 'Content-Type' => 'application/json' }, [{ message: msg }.to_json]]
   end
 end

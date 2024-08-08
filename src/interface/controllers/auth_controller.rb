@@ -4,6 +4,7 @@ require './src/interface/serializers/serializer'
 
 class AuthController
     def initialize
+        pp "===== auth_controller ====="
         @auth_service = AuthUseCase.new
         @serializer = Serializer.new
     end
@@ -22,9 +23,8 @@ class AuthController
     end
 
     def logout(request)
-        authorization = request.env['HTTP_AUTHORIZATION']
-        body = JSON.parse(request.body.read)
-        res = @auth_service.logout(body)
+        jwt = request.env['HTTP_AUTHORIZATION']
+        res = @auth_service.logout(jwt)
         @serializer.serialize(res)
     end
 end

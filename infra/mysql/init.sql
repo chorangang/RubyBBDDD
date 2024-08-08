@@ -29,6 +29,16 @@ CREATE TABLE Comments (
     FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Tokens (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    value VARCHAR(255) NOT NULL,
+    expired BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
 -- Users テーブルにデータを挿入
 INSERT INTO Users (name, email, password) VALUES
 ('User1', 'user1@example.com', 'P@ssword1'),
