@@ -27,4 +27,10 @@ class AuthController
         res = @auth_service.logout(jwt)
         @serializer.serialize(res)
     end
+
+    def user(request)
+        body = JSON.parse(request.body.read)
+        res = @auth_service.user(body)
+        @serializer.serialize(res)
+    end
 end

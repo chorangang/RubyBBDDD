@@ -1,7 +1,11 @@
 require 'bcrypt'
 
 class AuthService
-  # Passwordのハッシュ化
+  def initialize
+    pp "===== auth_service ====="
+  end
+
+    # Passwordのハッシュ化
   def hash(password)
     BCrypt::Password.create(password)
   end

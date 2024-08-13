@@ -24,8 +24,4 @@ class TokenService
     token = @repo.find(token)
     token.nil?
   end
-
-  def save(token)
-    @repo.save(token)
-  end
 end

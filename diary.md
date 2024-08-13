@@ -42,6 +42,9 @@
         →（Puma caught this error: Can't connect to local server through socket '/var/run/mysqld/mysqld.s ock' (2) (Mysql2::Error::ConnectionError)）
         だいぶ詰まった。体感で２時間くらい。
         →my.cnfに[client]socket=/var/run/mysqld/mysqld.sockを追加したら動くようになったがこれは正しいのだろうか。
+        →たぶんだけど正しくなかった。同じようなエラーを吐き続ける呪いのアプリケーションと化した。もうやりたくない。（8/12参照）
+        今のところ帰りの特急と帰ってから２時間３時間はこれの解決ができなくて詰んでる。テストコードも当然通らない。
+        DB変えるところまで考えておこう。Railsの場合はtmp下にSockerファイルを追加すると治る場合が多いらしい。
     ・Response返すときにJsonにできなかったり返せなかったり。
         →#<NoMethodError: undefined method `to_i' for {"Content-Type"=>"application/json"}:Hash>　など
         たぶんRubyの型についてよくわかってない俺が悪い。ちゃんと勉強しよう！
@@ -53,6 +56,11 @@
         https://amzn.asia/d/g75EL43
     ・JWTの認証ってどうやるのが正しいのだ？？
         →認証のような横断的関心事(cross-cutting concern)はMiddlewareを使うのが一般的か。
+    ・レイヤードアーキテクチャってActiveRecordパターンみたいな感じでModelにメソッド生やしていくのが正しいの？
+        Usecase->Domain→Infraの流れを意識するとDomainModelが肥大化していく。
+        これってActiveReocrdパターンじゃね。Repositoryって書いてるのにこれでいいのかしら。
+        →Domainをいちいち経由する必要はない。たぶんレイヤードアーキテクチャで重要なのは滝登りしない、
+        Domain->Usecaseみたいな下から上への依存を作らないこと。Modelがもつ振る舞いとして不自然なものはUsecaseに書くべき。
 
 参考にしたもの
     GPT, Claude
@@ -88,3 +96,19 @@
     今日はToken周りまでなんとなく実装。
     テストでトークン認証の動作確認するなどやりたい
     Token認証のフローが結構めんどくさくて雑な実装になっている希ガス。
+
+2024/08/10:
+    昨日からテストコードを追加して実装を見直すなどしている。
+
+2024/08/12:
+    いい加減作り切りたい。テストでどん詰まり中。
+    テストなんかよりDBに接続できない問題で死にてい。
+    これまで通りのコードでCompose up buildすると、
+    Unable to load application: Mysql2::Error::ConnectionError: Can't connect to server on 'db' (115)
+    なるほど、では設定を変えてみようとしてHOSTをLocalhostにすると
+    Can't connect to local server through socket '/var/run/mysqld/mysqld.sock' (2) (Mysql2::Error::ConnectionError)
+    DB買えるかどうかから迷っている。死にてい。
+
+2024/08/13:
+    もうMysql2と戦いたくないのでPgに切り替える。
+    

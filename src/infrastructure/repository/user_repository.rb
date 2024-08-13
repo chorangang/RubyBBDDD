@@ -12,6 +12,13 @@ class UserRepository < Repository
         result = stmt.execute(user.email)
         result.first
     end
+    
+    def findById(user)
+        query = "SELECT * FROM Users WHERE id = ?"
+        stmt = client.prepare(query)
+        result = stmt.execute(user.id)
+        result.first
+    end
 
     def save(user)
         query = "INSERT INTO Users (name, email, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"

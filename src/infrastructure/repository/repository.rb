@@ -1,19 +1,22 @@
-require 'mysql2'
+# require 'mysql2'
+require 'pg'
 
 class Repository
     def initialize
-        @client = Mysql2::Client.new(
-            host:     ENV['HOST'],
-            username: ENV['MYSQL_USER'],
-            password: ENV['MYSQL_PASSWORD'],
-            port:     ENV['PORT'],
-            database: ENV['MYSQL_DATABASE'],
+        pp "===== repository ====="
+
+        @conn = connection = PG::Connection.new(
+            host: ENV['HOST'],
+            port: ENV['PORT'],
+            dbname: ENV['DB_NAME'],
+            user: ENV['USER'],
+            password: ENV['PASSWORD']
         )
     end
 
     protected
 
-    def client
-        @client
+    def connect
+        @conn
     end
 end

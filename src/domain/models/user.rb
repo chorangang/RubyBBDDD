@@ -9,21 +9,17 @@ class User
     attr_accessor :id, :name, :email, :password, :created_at, :updated_at
 
     def initialize(request_hash)
+        pp "===== user model ====="
+
         @auth_service = AuthService.new
         @repo         = UserRepository.new
 
         @id         = request_hash['id']
-        @name       = Name.new(request_hash['name'])
-        @email      = Email.new(request_hash['email'])
-        @password   = Password.new(request_hash['password'])
-        @created_at = request_hash['created_at'] || set_now
-        @updated_at = request_hash['updated_at'] || set_now
-    end
-
-    def save
-        # 値オブジェクトから値を取り出す
-        set_values(password_hashing: true)
-        @repo.save(self)
+        @name       = Name.new(request_hash['name']).name
+        @email      = Email.new(request_hash['email']).email
+        @password   = Password.new(request_hash['password']).password
+        @created_at = request_hash['created_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        @updated_at = request_hash['updated_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
     end
 
     def login
@@ -32,14 +28,15 @@ class User
         @auth_service.verify(@password, user['password'])
     end
 
-    private
-
+    # 値オブジェクトが持っている値を取り出す
     def set_values(password_hashing: false)
         set_name_value
         set_email_value
         set_password_value(hashing: password_hashing)
     end
 
+    private
+    
     def set_name_value
         @name = @name.name
     end
@@ -54,10 +51,5 @@ class User
         else
             @password = @password.password
         end
-    end
-
-    def set_now
-        now = Time.now
-        now.strftime("%Y-%m-%d %H:%M:%S")
     end
 end

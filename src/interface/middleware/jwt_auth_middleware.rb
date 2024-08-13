@@ -2,14 +2,14 @@ require 'jwt'
 require 'json'
 require './src/modules/secrets_loader'
 require './src/routes/routes'
-require './src/application/usecase/auth_service'
+require './src/application/usecase/auth_usecase'
 
 class JwtAuthMiddleware
   def initialize(app)
     pp "===== jwt_auth_middleware ====="
     @app = app
     @skip_paths = SKIP_PATHS
-    @auth_service = AuthService.new
+    @auth_usecase = AuthUseCase.new
   end
 
   def call(env)
@@ -47,8 +47,8 @@ class JwtAuthMiddleware
       end
 
       # ブラックリストにないか確認
-      if @auth_service.authenticate(token)
-        return unauthorized_response(msg: 'Token revoked')
+      if @auth_usecase.authenticate(token)
+        return unauthorized_response(msg: 'Token is invalid')
       end
     rescue JWT::DecodeError
       return unauthorized_response
