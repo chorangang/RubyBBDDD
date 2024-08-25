@@ -14,7 +14,6 @@ gem 'guard'
 gem 'guard-puma'
 
 # DB
-# gem 'mysql2'
 gem 'pg'
 
 # ENVの読み込み

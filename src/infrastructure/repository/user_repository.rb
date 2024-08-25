@@ -12,7 +12,7 @@ class UserRepository < Repository
         result = stmt.execute(user.email)
         result.first
     end
-    
+
     def findById(user)
         query = "SELECT * FROM Users WHERE id = ?"
         stmt = client.prepare(query)
