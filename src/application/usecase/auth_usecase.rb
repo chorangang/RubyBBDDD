@@ -41,10 +41,8 @@ class AuthUseCase
     def login(request_hash)
         @user = User.new(request_hash)
 
-        # 値オブジェクトから値を取り出す
-        @user.set_values(password_hashing: false)
-
-        @user = @repo.findByEmail(@user)
+        # 値オブジェクトから値を取り出してRepositoryに渡す
+        @user = @repo.findByEmail(@user.to_hash)
 
         if @auth_service.verify(@password, user['password'])
             # JWTを生成してDBに保存
@@ -53,7 +51,7 @@ class AuthUseCase
             @token_repo.save(@token)
 
             #JWTをつけてLogin成功メッセージを返す
-            return { 
+            return {
                 message: 'Login successful',
                 token:   @token.value,
                 status:  200

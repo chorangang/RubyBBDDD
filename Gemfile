@@ -26,3 +26,6 @@ gem 'jwt'
 # テスト
 gem "rspec"
 gem "rack-test"
+
+#デバッグ
+gem "pry"

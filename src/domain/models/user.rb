@@ -12,7 +12,6 @@ class User
         pp "===== user model ====="
 
         @auth_service = AuthService.new
-        @repo         = UserRepository.new
 
         @id         = request_hash['id']
         @name       = Name.new(request_hash['name']).name
@@ -22,21 +21,23 @@ class User
         @updated_at = request_hash['updated_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
     end
 
-    def login
-        set_values(password_hashing: false)
-        user = @repo.find(self)
-        @auth_service.verify(@password, user['password'])
-    end
-
     # 値オブジェクトが持っている値を取り出す
-    def set_values(password_hashing: false)
+    def to_hash(password_hashing: false)
         set_name_value
         set_email_value
         set_password_value(hashing: password_hashing)
+        return {
+            id: @id,
+            name: @name,
+            email: @email,
+            password: @password,
+            created_at: @created_at,
+            updated_at: @updated_at,
+        }
     end
 
     private
-    
+
     def set_name_value
         @name = @name.name
     end

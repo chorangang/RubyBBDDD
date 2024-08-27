@@ -5,6 +5,10 @@ require './src/infrastructure/repository/user_repository_interface'
 class UserRepository < Repository
     include UserRepositoryInterface
 
+    def initialize()
+        pp "===== UserRepository ====="
+    end
+
     def find(user)
         query = "SELECT * FROM Users WHERE id = $1"
         result = @conn.exec_params(query, [user.id])

@@ -8,4 +8,12 @@ class Token
     @user_id = user_id
     @expired_at = expired_at
   end
+
+  def to_hash
+    return {
+      user_id: @user_id,
+      value: @value,
+      expired_at: @expired_at,
+    }
+  end
 end

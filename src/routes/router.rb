@@ -11,14 +11,18 @@ class Router
     def route(request)
         http_method = request.request_method
         path = request.path_info
+        pp @routes
+        pp path
         route_info = @routes.dig(http_method, path)
+        pp "== route_info =="
+        pp route_info
 
         if route_info
             controller = Object.const_get(route_info[:controller]).new
             action = route_info[:action]
             body, status, headers = controller.send(action, request)
         else
-            body, status, headers = [{ message: 'Not Found' }.to_json], 404, { 'Content-Type' => 'application/json' }
+            body, status, headers = [{ message: 'route not found' }.to_json], 404, { 'Content-Type' => 'application/json' }
         end
 
         Rack::Response.new(body, status, headers).finish

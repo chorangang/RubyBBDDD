@@ -14,28 +14,33 @@ class JwtAuthMiddleware
 
   def call(env)
     # 認証をスキップするパスかどうかを判定
+    pp "===== jwt auth start ====="
     request = Rack::Request.new(env)
     path = request.path_info
 
     # 認証をスキップするパスの場合はそのまま次のミドルウェアまたはアプリケーションに処理を渡す
     if @skip_paths.include?(path)
+      pp "===== this request from skip paths. ====="
       return @app.call(env)
     end
-
+    
     # リクエストヘッダーからAuthorizationを取得
     authorization = env['HTTP_AUTHORIZATION']
     unless authorization
+      pp "===== http_authorization is nil. ====="
       return unauthorized_response
     end
 
     # Bearerトークンを取得
     bearer, token = authorization.split(' ')
     unless bearer == 'Bearer'
+      pp "===== bearer token is nil. ====="
       return unauthorized_response
     end
-
+    
     # JWTトークンを検証
     begin
+      pp "===== check if JWT is correct. ====="
       # Module:SecretsLoaderを利用して環境変数を読み込む
       secrets = SecretsLoader.load
       # JWTトークンを検証
@@ -43,20 +48,23 @@ class JwtAuthMiddleware
   
       # トークンの有効期限を確認
       if decoded.first['expired'] < Time.now.to_i
+        pp "===== token is expire. ====="
         return unauthorized_response(msg: 'Token expired')
       end
 
       # ブラックリストにないか確認
       if @auth_usecase.authenticate(token)
+        pp "===== this token " + token + " is registered in BlackList."
         return unauthorized_response(msg: 'Token is invalid')
       end
     rescue JWT::DecodeError
+      pp "===== this token is incorrect. ====="
       return unauthorized_response
     end
 
+    pp "===== this token is authenticated. ====="
     @app.call(env)
   end
-
 
   private
 
