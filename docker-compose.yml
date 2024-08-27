@@ -4,8 +4,8 @@ services:
   db:
     restart: always
     build:
-      context: postgresql
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: infra/pg/Dockerfile
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: choran
@@ -16,7 +16,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: infra/Dockerfile
+      dockerfile: infra/web/Dockerfile
     volumes:
       - .:/app
     ports:
@@ -34,4 +34,4 @@ services:
       - web
 
 volumes:
-  mysqldata:
+  pgdata:

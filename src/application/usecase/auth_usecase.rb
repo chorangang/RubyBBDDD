@@ -44,7 +44,7 @@ class AuthUseCase
         # 値オブジェクトから値を取り出す
         @user.set_values(password_hashing: false)
 
-        @user = @repo.find(@user)
+        @user = @repo.findByEmail(@user)
 
         if @auth_service.verify(@password, user['password'])
             # JWTを生成してDBに保存
@@ -99,13 +99,13 @@ class AuthUseCase
         user.set_values(password_hashing: false)
 
         # ユーザーを取得
-        user = @repo.findById(user)
+        user = @repo.find(user)
 
         if user.nil?
             return { message: 'User not found', status: 404 }
         end
 
-        # ユーザー情報を返す
+        # ユーザーを返す
         {
             id:         user['id'],
             name:       user['name'],
