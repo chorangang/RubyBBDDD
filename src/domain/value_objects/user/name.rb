@@ -1,9 +1,9 @@
 class Name
-  attr_reader :name
+  attr_reader :value
 
   def initialize(value)
     # nilを許容する
-    @name = validate(value) if value
+    @value = validate(value) if value
   end
 
   private

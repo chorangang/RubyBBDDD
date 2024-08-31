@@ -1,8 +1,8 @@
 class Email
-  attr_reader :email
+  attr_reader :value
 
   def initialize(value)
-    @email = validate(value)
+    @value = validate(value)
   end
 
   private

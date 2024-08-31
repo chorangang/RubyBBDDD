@@ -1,15 +1,17 @@
 require './src/domain/models/user'
 require './src/domain/models/token'
-require './src/domain/service/token_service'
 require './src/modules/secrets_loader'
+require './src/domain/service/auth_service'
+require './src/infrastructure/repository/user_repository'
+require './src/infrastructure/repository/token_repository'
 
 class AuthUseCase
     # Initializes a new instance of the AuthUseCase class.
     def initialize
         pp "===== auth_usecase ====="
         @auth_service = AuthService.new
-        @token_service = TokenService.new
         @user_repo = UserRepository.new
+        @token_repo = TokenRepository.new
     end
 
     # Registers a new user.
@@ -18,15 +20,14 @@ class AuthUseCase
     # @return [Hash] The result of the user registration operation.
     #
     def register(request_hash)
+        # リクエストからユーザーを一人インスタンス化
         @user = User.new(request_hash)
 
-        # 値オブジェクトから値を取り出す
-        @user.set_values(password_hashing: true)
+        # パスワードをハッシュ化
+        @user = @auth_service.passwrod_hash(@user)
 
-        # ユーザーを保存して成功失敗で真偽値が返る
-        result = @repo.save(@user)
-
-        if result === true
+        # ユーザーを保存成功で200、失敗で400
+        if @user_repo.save(@user.to_hash)
             return { message: 'User created successfully', status: 201 }
         end
 
@@ -39,16 +40,18 @@ class AuthUseCase
     # @return [Hash] The result of the user login operation.
     #
     def login(request_hash)
-        @user = User.new(request_hash)
+        # emailでユーザーを検索する
+        @user = User.new(@user_repo.findByEmail(request_hash['email']))
 
-        # 値オブジェクトから値を取り出してRepositoryに渡す
-        @user = @repo.findByEmail(@user.to_hash)
+        if @user.nil?
+            return { message: 'User not found.', status: 404 }
+        end
 
-        if @auth_service.verify(@password, user['password'])
+        if @auth_service.verify(request_hash['password'], @user.get_password_value)
             # JWTを生成してDBに保存
             @token = Token.new(user.id)
-            @token = @token_service.generate_token(@token)
-            @token_repo.save(@token)
+            @token = @auth_service.generate_token(@token.to_hash)
+            @token_repo.save(@token.to_hash)
 
             #JWTをつけてLogin成功メッセージを返す
             return {
@@ -67,8 +70,8 @@ class AuthUseCase
     # @return [Boolean] True if the JWT is valid and not expired, false otherwise.
     #
     def authenticate(jwt)
-        # Tokenを検証して有効期限を確認
-        @token_service.exists?(jwt)
+        # JWTがブラックリストにいないか確認
+        @auth_service.token_exsits?(jwt)
     end
 
     # Logs out a user based on the provided JWT.
@@ -79,8 +82,8 @@ class AuthUseCase
     def logout(jwt)
         # Tokenを保存してexpired_atを更新し使えなくしてログアウト
         decoded_token = JWT.decode(jwt, SecretsLoader.load.public_key, true, algorithm: 'RS256')
-        token = Token.new(decoded_token.first['user_id'], jwt, Time.now() - 60)
-        @token_service.save(token)
+        @token = Token.new(decoded_token.first['user_id'], jwt, Time.now() - 60)
+        @token_repo.save(@token.to_hash)
 
         { message: 'Logout successful', status: 200 }
     end
@@ -90,14 +93,13 @@ class AuthUseCase
     # @param request_hash [Hash] The request parameters for retrieving user information.
     # @return [User] The user object containing the requested information.
     #
-    def user(request_hash)
-        user = User.new(request_body)
-
-        # 値オブジェクトから値を取り出す
-        user.set_values(password_hashing: false)
+    def user(jwt)
+        # JWTをデコードしてユーザーIDなどをエンティティへ
+        decoded_token = JWT.decode(jwt, SecretsLoader.load.public_key, true, algorithm: 'RS256')
+        @token = Token.new(decoded_token.first['user_id'], jwt, decoded_token.first['expired_at'])
 
         # ユーザーを取得
-        user = @repo.find(user)
+        user = @user_repo.find(@token.user_id)
 
         if user.nil?
             return { message: 'User not found', status: 404 }

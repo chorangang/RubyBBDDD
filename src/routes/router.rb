@@ -1,5 +1,6 @@
 class Router
     def initialize(env)
+        pp "===== router ====="
         @routes = env
     end
 
@@ -11,11 +12,7 @@ class Router
     def route(request)
         http_method = request.request_method
         path = request.path_info
-        pp @routes
-        pp path
         route_info = @routes.dig(http_method, path)
-        pp "== route_info =="
-        pp route_info
 
         if route_info
             controller = Object.const_get(route_info[:controller]).new

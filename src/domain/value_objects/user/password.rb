@@ -1,8 +1,8 @@
 class Password
-  attr_reader :password
+  attr_reader :value
 
   def initialize(value)
-    @password = validate(value)
+    @value = validate(value)
   end
 
   private
@@ -12,20 +12,12 @@ class Password
       raise StandardError, "Password must be at least 8 characters long"
     end
 
-    unless value =~ /[A-Z]/
-      raise StandardError, "Password must contain at least one uppercase letter"
-    end
-
     unless value =~ /[a-z]/
       raise StandardError, "Password must contain at least one lowercase letter"
     end
 
     unless value =~ /\d/
       raise StandardError, "Password must contain at least one digit"
-    end
-
-    unless value =~ /[!@#$%^&*]/
-      raise StandardError, "Password must contain at least one special character"
     end
 
     value

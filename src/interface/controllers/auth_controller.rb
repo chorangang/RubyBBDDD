@@ -12,7 +12,6 @@ class AuthController
     def register(request)
         body = JSON.parse(request.body.read)
         res = @auth_service.register(body)
-        pp res
         @serializer.serialize(res)
     end
 

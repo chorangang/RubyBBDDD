@@ -7,6 +7,7 @@ class UserRepository < Repository
 
     def initialize()
         pp "===== UserRepository ====="
+        super()
     end
 
     def find(user)
@@ -16,21 +17,25 @@ class UserRepository < Repository
     end
 
     def findByEmail(user)
-        query = "SELECT * FROM Users WHERE email = $1"
-        result = @conn.exec_params(query, [user.email])
+        result = @conn.exec_params(
+            "SELECT * FROM Users WHERE email = $1",
+            [user[:email]]
+        )
         result.first
     end
 
     def save(user)
+        pp "===== user repository :25 ====="
+        pp [user[:name], user[:email], user[:password], user[:created_at], user[:updated_at]]
         result = @conn.exec_params(
             "INSERT INTO Users (name, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)",
-            [user.name, user.email, user.password, user.created_at, user.updated_at]
+            [user[:name], user[:email], user[:password], user[:created_at], user[:updated_at]]
         )
         result.cmd_tuples > 0
     end
 
     def update(user)
-        query = "UPDATE Users SET name = $1, updated_at = NOW() WHERE id = $2"
+        query = "UPDATE Users SET name = $1], updated_at = NOW() WHERE id = $2"
         result = @conn.exec_params(query, [user.name, user.id])
         result.cmd_tuples > 0
     end

@@ -9,48 +9,51 @@ class User
     attr_accessor :id, :name, :email, :password, :created_at, :updated_at
 
     def initialize(request_hash)
-        pp "===== user model ====="
+        pp "===== user ====="
 
         @auth_service = AuthService.new
 
         @id         = request_hash['id']
-        @name       = Name.new(request_hash['name']).name
-        @email      = Email.new(request_hash['email']).email
-        @password   = Password.new(request_hash['password']).password
+        @name       = Name.new(request_hash['name'])
+        @email      = Email.new(request_hash['email'])
+        @password   = Password.new(request_hash['password'])
         @created_at = request_hash['created_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
         @updated_at = request_hash['updated_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
     end
 
     # 値オブジェクトが持っている値を取り出す
-    def to_hash(password_hashing: false)
-        set_name_value
-        set_email_value
-        set_password_value(hashing: password_hashing)
+    def to_hash
         return {
             id: @id,
-            name: @name,
-            email: @email,
-            password: @password,
+            name: @name.value,
+            email: @email.value,
+            password: @password.value,
             created_at: @created_at,
             updated_at: @updated_at,
         }
     end
 
-    private
-
-    def set_name_value
-        @name = @name.name
+    def get_name_value
+        @name.value
     end
 
-    def set_email_value
-        @email = @email.email
+    def get_email_value
+        @email.value
     end
 
-    def set_password_value(hashing: false)
-        if hashing
-            @password = @auth_service.hash(@password.password)
-        else
-            @password = @password.password
-        end
+    def get_password_value
+        @password.value
+    end
+
+    def set_name_value(name)
+        @name = Name.new(name)
+    end
+    
+    def set_email_value(email)
+        @email = Email.new(email)
+    end
+    
+    def set_password_value(password)
+        @password = Password.new(password)
     end
 end
