@@ -28,6 +28,7 @@ class JwtAuthMiddleware
     authorization = env['HTTP_AUTHORIZATION']
     unless authorization
       pp "===== http_authorization is nil. ====="
+      pp env
       return unauthorized_response
     end
 
@@ -45,9 +46,9 @@ class JwtAuthMiddleware
       secrets = SecretsLoader.load
       # JWTトークンを検証
       decoded = JWT.decode(token, secrets.private_key, 'RS256')
-  
+
       # トークンの有効期限を確認
-      if decoded.first['expired'] < Time.now.to_i
+      if decoded.first['expired_at'] < Time.now.to_i
         pp "===== token is expire. ====="
         return unauthorized_response(msg: 'Token expired')
       end

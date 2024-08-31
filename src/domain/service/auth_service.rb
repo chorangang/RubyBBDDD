@@ -20,21 +20,23 @@ class AuthService
 
   # Passwordの検証
   def verify(password, hashed_password)
-    BCrypt::Password.new(hashed_password) == password
+    BCrypt::Password.create(hashed_password) == hashed_password
   end
 
   def generate_token(token)
-    pp "===== generate_token ====="
     @token = token
+
     # Moduleで秘密鍵を取ってきてJWTを生成しTokenの中身を書き換える
     secrets = SecretsLoader.load
-    token_content = {
-      user_id: token.user_id,
-      value: JWT.encode(content, secrets.private_key, 'RS256'),
-      expired: Time + 60 * 60 # 1時間後
+
+    payload = {
+      user_id: @token.user_id,
+      expired: @token.expired_at # 1時間後
     }
-    @token.set_values(token_content)
-    pp "===== generate_token finish ====="
+
+    @token.set_values(JWT.encode(payload, secrets.private_key, 'RS256'))
+
+    @token
   end
 
   def token_exsits?(token)

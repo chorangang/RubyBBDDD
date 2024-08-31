@@ -1,10 +1,11 @@
 require './src/infrastructure/repository/token_repository_interface'
+require './src/infrastructure/repository/postgresql_repository'
 
-class TokenRepository < Repository
+class TokenRepository < PostgreSQLRepository
   include TokenRepositoryInterface
 
   def initialize
-    pp "===== TokenRepository ====="
+    pp "===== token_repository ====="
   end
 
   def save(token)

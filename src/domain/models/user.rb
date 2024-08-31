@@ -13,6 +13,13 @@ class User
 
         @auth_service = AuthService.new
 
+        pp request_hash['id']
+        pp request_hash['name']
+        pp request_hash['email']
+        pp request_hash['password']
+        pp request_hash['created_at']
+        pp request_hash['updated_at']
+
         @id         = request_hash['id']
         @name       = Name.new(request_hash['name'])
         @email      = Email.new(request_hash['email'])

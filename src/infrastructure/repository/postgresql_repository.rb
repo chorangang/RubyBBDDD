@@ -1,8 +1,8 @@
 require 'pg'
 
-class Repository
+class PostgreSQLRepository
     def initialize
-        pp "===== repository ====="
+        pp "===== postgresql_repository ====="
 
         @conn = connection = PG::Connection.new(
             host: ENV['HOST'],

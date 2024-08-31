@@ -49,8 +49,8 @@ class AuthUseCase
 
         if @auth_service.verify(request_hash['password'], @user.get_password_value)
             # JWTを生成してDBに保存
-            @token = Token.new(user.id)
-            @token = @auth_service.generate_token(@token.to_hash)
+            @token = Token.new(@user.to_hash)
+            @token = @auth_service.generate_token(@token)
             @token_repo.save(@token.to_hash)
 
             #JWTをつけてLogin成功メッセージを返す
