@@ -1,6 +1,5 @@
 require 'jwt'
 require 'json'
-require './src/modules/secrets_loader'
 require './src/routes/routes'
 require './src/application/usecase/auth_usecase'
 
@@ -24,37 +23,37 @@ class JwtAuthMiddleware
       return @app.call(env)
     end
     
-    # リクエストヘッダーからAuthorizationを取得
-    authorization = env['HTTP_AUTHORIZATION']
-    unless authorization
+    # Tokenを取得
+    token = env['HTTP_AUTHORIZATION']
+    unless token
       pp "===== http_authorization is nil. ====="
-      pp env
       return unauthorized_response
     end
 
-    # Bearerトークンを取得
-    bearer, token = authorization.split(' ')
-    unless bearer == 'Bearer'
-      pp "===== bearer token is nil. ====="
-      return unauthorized_response
-    end
+    # # Bearerトークンを取得
+    # bearer, token = authorization.split(' ')
+    # unless bearer == 'Bearer'
+    #   pp "===== bearer token is nil. ====="
+    #   return unauthorized_response
+    # end
     
     # JWTトークンを検証
     begin
       pp "===== check if JWT is correct. ====="
-      # Module:SecretsLoaderを利用して環境変数を読み込む
-      secrets = SecretsLoader.load
+
       # JWTトークンを検証
-      decoded = JWT.decode(token, secrets.private_key, 'RS256')
+      decoded = JWT.decode(token, ENV['HMAC_SECRET'], true, { algorithm: 'HS256' })
 
-      # トークンの有効期限を確認
-      if decoded.first['expired_at'] < Time.now.to_i
-        pp "===== token is expire. ====="
-        return unauthorized_response(msg: 'Token expired')
-      end
+      # expired_at = Time.new(decoded[0]['expired_at'])
 
-      # ブラックリストにないか確認
-      if @auth_usecase.authenticate(token)
+      # # トークンの有効期限を確認
+      # if expired_at < Time.now
+      #   pp "===== token is expire. ====="
+      #   return unauthorized_response(msg: 'Token expired')
+      # end
+
+      # 認証済みのTokenか、期限切れでないかを確認
+      if !@auth_usecase.authenticate(token)
         pp "===== this token " + token + " is registered in BlackList."
         return unauthorized_response(msg: 'Token is invalid')
       end
@@ -70,8 +69,6 @@ class JwtAuthMiddleware
   private
 
   def unauthorized_response(msg: 'Unauthorized')
-    jwt = env['HTTP_AUTHORIZATION']
-    @auth_service.logout(jwt)
     return [401, { 'Content-Type' => 'application/json' }, [{ message: msg }.to_json]]
   end
 end

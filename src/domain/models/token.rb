@@ -3,11 +3,11 @@ require 'time'
 class Token
   attr_accessor :user_id, :value, :expired_at
 
-  def initialize(hash)
+  def initialize(user_id, value = nil, expired_at = nil)
     pp "===== token ====="
-    @user_id = hash[:user_id] || nil
-    @value = hash[:value] || nil
-    @expired_at = hash[:expired_at] || Time.now + 60 * 60
+    @user_id = user_id || nil
+    @value = value || nil
+    @expired_at = expired_at || Time.now + 60 * 60
   end
 
   def to_hash

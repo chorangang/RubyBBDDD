@@ -13,13 +13,6 @@ class User
 
         @auth_service = AuthService.new
 
-        pp request_hash['id']
-        pp request_hash['name']
-        pp request_hash['email']
-        pp request_hash['password']
-        pp request_hash['created_at']
-        pp request_hash['updated_at']
-
         @id         = request_hash['id']
         @name       = Name.new(request_hash['name'])
         @email      = Email.new(request_hash['email'])
@@ -29,16 +22,6 @@ class User
     end
 
     # 値オブジェクトが持っている値を取り出す
-    def to_hash
-        return {
-            id: @id,
-            name: @name.value,
-            email: @email.value,
-            password: @password.value,
-            created_at: @created_at,
-            updated_at: @updated_at,
-        }
-    end
 
     def get_name_value
         @name.value
@@ -55,7 +38,7 @@ class User
     def set_name_value(name)
         @name = Name.new(name)
     end
-    
+
     def set_email_value(email)
         @email = Email.new(email)
     end

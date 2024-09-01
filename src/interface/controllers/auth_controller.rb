@@ -22,14 +22,12 @@ class AuthController
     end
 
     def logout(request)
-        jwt = request.env['HTTP_AUTHORIZATION']
-        res = @auth_service.logout(jwt)
+        res = @auth_service.logout(request.get_header('HTTP_AUTHORIZATION'))
         @serializer.serialize(res)
     end
 
     def user(request)
-        body = JSON.parse(request.body.read)
-        res = @auth_service.user(body)
+        res = @auth_service.user(request.get_header('HTTP_AUTHORIZATION'))
         @serializer.serialize(res)
     end
 end

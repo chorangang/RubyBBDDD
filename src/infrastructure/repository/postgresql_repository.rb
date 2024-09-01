@@ -4,7 +4,7 @@ class PostgreSQLRepository
     def initialize
         pp "===== postgresql_repository ====="
 
-        @conn = connection = PG::Connection.new(
+        @conn = PG::Connection.new(
             host: ENV['HOST'],
             port: ENV['PORT'],
             dbname: ENV['DB_NAME'],
