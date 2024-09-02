@@ -2,6 +2,30 @@
 
 source "https://rubygems.org"
 
+
+# HTTPサーバ
 gem 'puma'
+
+# ベース
 gem 'rack'
-gem 'roda'
+
+# ソースの自動反映
+gem 'guard'
+gem 'guard-puma'
+
+# DB
+gem 'pg'
+
+# ENVの読み込み
+gem 'dotenv'
+
+# 暗号化など
+gem 'bcrypt'
+gem 'jwt'
+
+# テスト
+gem "rspec"
+gem "rack-test"
+
+# デバッグ
+gem 'debug'

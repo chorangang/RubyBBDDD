@@ -1,4 +1,4 @@
-FROM ruby:3.1
+FROM ruby:3.2.2
 
 WORKDIR /app
 
@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD bundle exec puma -C config/puma.rb

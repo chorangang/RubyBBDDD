@@ -1,13 +1,4 @@
-Learning clean-architecture.
-
-using
-    puma: http server
-        https://github.com/puma/puma
-    rack: middleware interface
-        https://github.com/rack/rack
-    roda: routing
-        https://github.com/jeremyevans/roda
-
+BBSAPI!!!
 
 ## API Routes
 
