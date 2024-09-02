@@ -3,8 +3,8 @@ require './src/domain/models/token'
 require './src/domain/service/auth_service'
 require './src/infrastructure/repository/user_repository'
 require './src/infrastructure/repository/token_repository'
-require './src/application/usecase/dto/user_data'
-require './src/application/usecase/dto/token_data'
+require './src/application/dto/user_data'
+require './src/application/dto/token_data'
 
 class AuthUseCase
     # Initializes a new instance of the AuthUseCase class.
