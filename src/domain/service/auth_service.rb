@@ -23,7 +23,7 @@ class AuthService
 
   def generate_token(token)
     @token = token
-    @token.value = JWT.encode {user_id: @token.user_id}, ENV['HMAC_SECRET'], 'HS256'
+    @token.value = JWT.encode({user_id: @token.user_id}, ENV['HMAC_SECRET'], 'HS256')
 
     @token
   end

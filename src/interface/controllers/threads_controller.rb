@@ -1,7 +1,10 @@
+require 'json'
+require './src/application/usecase/threads_usecase'
+
 class ThreadsController
-    def initialize(thread_usecase)
+    def initialize
         pp "===== threads_controller ====="
-        @thread_usecase = thread_usecase
+        @threads_usecase = ThreadsUsecase.new
     end
 
     def index(req)
@@ -9,21 +12,23 @@ class ThreadsController
         @serializer.serialize(res)
     end
 
-    def create(req, res)
+    def save(req)
         body = JSON.parse(req.body)
         thread = @thread_usecase.create(body)
         res.status = 201
         res.body = JSON.generate(thread)
     end
 
-    def show(req, res)
+    def show(req, id)
+        pp "===== show ====="
         id = req.params['id']
+        pp "id: #{id}"
         thread = @thread_usecase.show(id)
         res.status = 200
         res.body = JSON.generate(thread)
     end
 
-    def update(req, res)
+    def update(req)
         id = req.params['id']
         body = JSON.parse(req.body)
         thread = @thread_usecase.update(id, body)
@@ -31,7 +36,7 @@ class ThreadsController
         res.body = JSON.generate(thread)
     end
 
-    def destroy(req, res)
+    def destroy(req)
         id = req.params['id']
         @thread_usecase.destroy(id)
         res.status = 204

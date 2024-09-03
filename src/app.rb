@@ -3,6 +3,9 @@ require 'dotenv'
 require './src//routes/router'
 require './src//routes/routes'
 require './src/interface/controllers/auth_controller'
+require './src/interface/controllers/users_controller'
+require './src/interface/controllers/threads_controller'
+require './src/interface/controllers/comments_controller'
 
 class App
     def call(env)
