@@ -43,17 +43,3 @@ class ThreadRepository < PostgreSQLRepository
     def define(id)
     end
 end
-{
-    id: 1,
-    user: [
-        id: 1,
-        name: "name",
-        email: "email",
-        created_at: "2021-01-01 00:00:00",
-        updated_at: "2021-01-01 00:00:00"
-    ],
-    title: "title",
-    content: "content",
-    created_at: "2021-01-01 00:00:00",
-    updated_at: "2021-01-01 00:00:00"
-}

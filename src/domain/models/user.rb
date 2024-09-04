@@ -8,17 +8,17 @@ require './src/domain/value_objects/user/password'
 class User
     attr_accessor :id, :name, :email, :password, :created_at, :updated_at
 
-    def initialize(hash)
+    def initialize(id:, name:, email:, password:, created_at:, updated_at:)
         pp "===== user ====="
 
         @auth_service = AuthService.new
 
-        @id         = hash['id']
-        @name       = Name.new(hash['name'])
-        @email      = Email.new(hash['email'])
-        @password   = Password.new(hash['password'])
-        @created_at = hash['created_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
-        @updated_at = hash['updated_at'] || Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        @id         = id
+        @name       = Name.new(name)
+        @email      = Email.new(email)
+        @password   = Password.new(password)
+        @created_at = created_at || Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        @updated_at = updated_at || Time.now.strftime("%Y-%m-%d %H:%M:%S")
     end
 
     # 値オブジェクトが持っている値を取り出す

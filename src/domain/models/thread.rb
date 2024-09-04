@@ -7,12 +7,11 @@ class Thread
 
     def initialize(id: nil, title:, content:, user:, created_at: Time.now, updated_at: Time.now)
         @id = id
+        @user = User.new(user)
         @title = Title.new(title)
         @content = Content.new(content)
         @created_at = created_at || Time.now.strftime("%Y-%m-%d %H:%M:%S")
         @updated_at = updated_at || Time.now.strftime("%Y-%m-%d %H:%M:%S")
-
-        @user = User.new(user)
     end
 
     def get_title_value

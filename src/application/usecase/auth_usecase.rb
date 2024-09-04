@@ -41,7 +41,10 @@ class AuthUseCase
     # @return [Hash] The result of the user login operation.
     #
     def login(request_hash)
+        pp request_hash
+        pp req
         # emailでユーザーを検索する
+        pp @user_repo.findByEmail(request_hash['email'])
         @user = User.new(@user_repo.findByEmail(request_hash['email']))
 
         if @user.nil?
