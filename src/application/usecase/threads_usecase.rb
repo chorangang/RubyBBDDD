@@ -7,6 +7,13 @@ class ThreadsUsecase
     end
 
     def getThread(id)
-        @thread_repository.find(id)
+        result = @thread_repository.find(id)
+        pp result
+
+        return {message: "Thread not found"} if result.nil?
+
+        @thread = Thread.new(result)
+
+        ThreadData.from_entity(@thread).serialize_to_hash
     end
 end
