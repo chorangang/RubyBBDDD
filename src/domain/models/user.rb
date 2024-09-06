@@ -9,7 +9,7 @@ class User
     attr_accessor :id, :name, :email, :password, :created_at, :updated_at
 
     def initialize(id:, name:, email:, password:, created_at:, updated_at:)
-        pp "===== user ====="
+        pp "===== entity user ====="
 
         @auth_service = AuthService.new
 

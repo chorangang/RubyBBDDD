@@ -8,13 +8,14 @@ require './src/interface/controllers/threads_controller'
 require './src/interface/controllers/comments_controller'
 
 class App
+
     def call(env)
         p "===== Hello! This is RubyBBDDD!! ====="
 
         # リクエストの情報を取得
         request = Rack::Request.new(env)
 
-        # ルーティング　　ルートの中身はroutes.rbに記述
+        # # ルーティング　　ルートの中身はroutes.rbに記述
         @router = Router.new(env)
         ROUTES.each do |route|
             @router.add_route(route[:method], route[:path], route[:controller], route[:action])

@@ -1,36 +1,36 @@
+require 'uri'
+
 class Router
     def initialize(env)
         pp "===== router ====="
-        @routes = env
     end
 
     def add_route(http_method, path, controller_class, action)
-        path_regex = path_to_regex(path)
-        @routes[http_method] ||= []
-        @routes[http_method] << { regex: path_regex, controller: controller_class, action: action, path: path }
+        path_regex = convert_path_to_regex(path)
+        @routes = []
+        @routes << { method: http_method, path: path_regex, controller: controller_class, action: action }
     end
 
     def route(request)
-        http_method = request.request_method
-        path = request.path_info
-        route_info = find_route(http_method, path)
+        pp request
+        # クエリパラメータを取得
+        query_params = request.params
 
-        if route_info
+        # 動的ルートにマッチするか確認
+        matched_route = @routes.find {
+            |route| route[:method] == request.request_method &&
+            request.path_info.match(route[:path])
+        }
+
+        pp query_params
+        pp matched_route
+
+        if matched_route
             controller = Object.const_get(route_info[:controller]).new
             action = route_info[:action]
-            pp route_info[:path]
-            pp path
-            path_params = extract_path_params(route_info[:path], path)
-            # パスパラメータがある場合のみ引数に渡す
-            if path_params.empty?
-                body, status, headers = controller.send(action, request)
-            else
-                body, status, headers = controller.send(action, request, path_params)
-            end
+            body, status, headers = controller.send(action, request)
         else
-            body = [{ message: 'route not found' }.to_json],
-            status = 404,
-            headers = { 'Content-Type' => 'application/json' }
+            body, status, headers = [{ message: 'route not found' }.to_json], 404, { 'Content-Type' => 'application/json' }
         end
 
         Rack::Response.new(body, status, headers).finish
@@ -38,21 +38,9 @@ class Router
 
     private
 
-    def path_to_regex(path)
-        Regexp.new("^" + path.gsub(/:\w+/, '(\\w+)') + "$")
+    # 動的なパスを正規表現に変換
+    def convert_path_to_regex(path)
+        Regexp.new("^" + path.gsub(/:\w+/, '(?<\0>[^/]+)') + "$")
     end
 
-    def find_route(http_method, path)
-        @routes[http_method]&.find { |route| path.match(route[:regex]) }
-    end
-
-    def extract_path_params(route_path, path)
-        pp "==== extract_path_params ===="
-        pp route_path
-        pp path
-        pp "==== extract_path_params ===="
-        param_names = route_path.scan(/:(\w+)/).flatten
-        param_values = path.match(path_to_regex(route_path)).captures
-        param_names.zip(param_values).to_h
-    end
 end

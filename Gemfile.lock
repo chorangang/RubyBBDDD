@@ -55,6 +55,8 @@ GEM
       ffi (~> 1.0)
     reline (0.3.2)
       io-console (~> 0.5)
+    roda (3.83.0)
+      rack
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -86,6 +88,7 @@ DEPENDENCIES
   puma
   rack
   rack-test
+  roda
   rspec
 
 BUNDLED WITH

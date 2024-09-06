@@ -22,16 +22,9 @@ ROUTES = [
     { method: 'DELETE', path: '/api/threads/:id', controller: 'ThreadsController', action: :destroy },
 
     # Comments
-    { method: 'GET',    path: '/api/threads/:thread_id/comments',     controller: 'CommentsController', action: :index },
-    { method: 'POST',   path: '/api/threads/:thread_id/comments',     controller: 'CommentsController', action: :create },
-    { method: 'GET',    path: '/api/threads/:thread_id/comments/:id', controller: 'CommentsController', action: :show },
-    { method: 'PUT',    path: '/api/threads/:thread_id/comments/:id', controller: 'CommentsController', action: :update },
-    { method: 'DELETE', path: '/api/threads/:thread_id/comments/:id', controller: 'CommentsController', action: :destroy },
-]
-
-# skip_jwt_auth_paths
-# JWT認証を素通りできるパスを設定
-SKIP_PATHS = [
-    '/api/register',
-    '/api/login',
+    { method: 'GET',    path: '/api/threads/:id/comments',     controller: 'CommentsController', action: :index },
+    { method: 'POST',   path: '/api/comments',     controller: 'CommentsController', action: :create },
+    { method: 'GET',    path: '/api/comments/:id', controller: 'CommentsController', action: :show },
+    { method: 'PUT',    path: '/api/comments/:id', controller: 'CommentsController', action: :update },
+    { method: 'DELETE', path: '/api/comments/:id', controller: 'CommentsController', action: :destroy },
 ]
