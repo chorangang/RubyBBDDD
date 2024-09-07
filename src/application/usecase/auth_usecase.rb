@@ -3,8 +3,8 @@ require './src/domain/models/token'
 require './src/domain/service/auth_service'
 require './src/infrastructure/repository/user_repository'
 require './src/infrastructure/repository/token_repository'
-require './src/application/usecase/dto/user_data'
-require './src/application/usecase/dto/token_data'
+require './src/application/dto/user_data'
+require './src/application/dto/token_data'
 
 class AuthUseCase
     # Initializes a new instance of the AuthUseCase class.
@@ -22,7 +22,14 @@ class AuthUseCase
     #
     def register(request_hash)
         # リクエストからユーザーを一人インスタンス化
-        @user = User.new(request_hash)
+        @user = User.new(
+            id: nil,
+            name: request_hash['name'],
+            email: request_hash['email'],
+            password: request_hash['password'],
+            created_at: nil,
+            updated_at: nil,
+        )
 
         # パスワードをハッシュ化
         @user = @auth_service.passwrod_hash(@user)
@@ -42,7 +49,16 @@ class AuthUseCase
     #
     def login(request_hash)
         # emailでユーザーを検索する
-        @user = User.new(@user_repo.findByEmail(request_hash['email']))
+        result = @user_repo.findByEmail(request_hash['email'])
+
+        @user = User.new(
+            id:         result['id'],
+            name:       result['name'],
+            email:      result['email'],
+            password:   result['password'],
+            created_at: result['created_at'],
+            updated_at: result['updated_at'],
+        )
 
         if @user.nil?
             return { message: 'User not found.', status: 404 }

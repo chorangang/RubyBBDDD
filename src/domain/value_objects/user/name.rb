@@ -2,6 +2,8 @@ class Name
   attr_reader :value
 
   def initialize(value)
+    pp "===== value object user name ====="
+
     # nilを許容する
     @value = validate(value) if value
   end

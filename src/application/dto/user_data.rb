@@ -23,7 +23,7 @@ class UserData
         )
     end
 
-    def serialize_to_hash
+    def serialize
         {
             id: @id,
             name: @name,

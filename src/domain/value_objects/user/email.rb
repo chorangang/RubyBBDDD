@@ -2,6 +2,7 @@ class Email
   attr_reader :value
 
   def initialize(value)
+    pp '===== value object user email ====='
     @value = validate(value)
   end
 
