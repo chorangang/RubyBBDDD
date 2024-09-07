@@ -2,6 +2,7 @@ class Password
   attr_reader :value
 
   def initialize(value)
+    pp "===== value object user password ====="
     @value = validate(value)
   end
 

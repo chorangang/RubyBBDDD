@@ -1,11 +1,6 @@
 require 'json'
 require 'dotenv'
-require './src//routes/router'
-require './src//routes/routes'
-require './src/interface/controllers/auth_controller'
-require './src/interface/controllers/users_controller'
-require './src/interface/controllers/threads_controller'
-require './src/interface/controllers/comments_controller'
+require './src/routes/router'
 
 class App
 
@@ -15,11 +10,10 @@ class App
         # リクエストの情報を取得
         request = Rack::Request.new(env)
 
-        # # ルーティング　　ルートの中身はroutes.rbに記述
-        @router = Router.new(env)
-        ROUTES.each do |route|
-            @router.add_route(route[:method], route[:path], route[:controller], route[:action])
-        end
-        @router.route(request)
+        # ルーティングしてレスポンスの中身を返す
+        body, status, headers = Router.new(env).route(request)
+
+        # レスポンス
+        Rack::Response.new(body, status, headers).finish
     end
 end

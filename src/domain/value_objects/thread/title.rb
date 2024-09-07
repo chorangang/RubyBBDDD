@@ -4,13 +4,13 @@ class Title
     attr_reader :value
 
     def initialize(value)
-        pp "===== thread title ====="
+        pp "===== value object thread title ====="
         @value = validate(value)
     end
 
     def validate(value)
         raise 'Title cannot be empty' if value.empty?
-        raise 'Title cannot be more than 255 characters' if value.length > MAX::LENGTH
+        raise 'Title cannot be more than 255 characters' if value.length > MAX_LENGTH
         value
     end
 end

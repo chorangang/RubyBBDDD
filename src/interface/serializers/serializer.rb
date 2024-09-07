@@ -2,6 +2,7 @@ class Serializer
   attr_accessor :body, :status, :headers
 
   def serialize(body = {}, status = 200, headers = { 'Content-Type' => 'application/json' })
+    pp "===== serializer serialize ====="
     @body = body
     @status = status
     @headers = headers
@@ -9,8 +10,6 @@ class Serializer
     if body[:status]
       @status = body[:status]
     end
-
-    pp @body
 
     return [ [@body.to_json], @status, @headers]
   end

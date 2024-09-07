@@ -16,7 +16,7 @@ ROUTES = [
 
     # Threads
     { method: 'GET',    path: '/api/threads',     controller: 'ThreadsController', action: :index },
-    { method: 'POST',   path: '/api/threads',     controller: 'ThreadsController', action: :create },
+    { method: 'POST',   path: '/api/threads',     controller: 'ThreadsController', action: :save },
     { method: 'GET',    path: '/api/threads/:id', controller: 'ThreadsController', action: :show },
     { method: 'PUT',    path: '/api/threads/:id', controller: 'ThreadsController', action: :update },
     { method: 'DELETE', path: '/api/threads/:id', controller: 'ThreadsController', action: :destroy },

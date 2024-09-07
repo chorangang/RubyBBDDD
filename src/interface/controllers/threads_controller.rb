@@ -1,44 +1,31 @@
 require 'json'
-require './src/application/usecase/threads_usecase'
+require './src/application/usecase/thread_usecase'
 
 class ThreadsController
     def initialize
         pp "===== threads_controller ====="
-        @threads_usecase = ThreadsUsecase.new
+        @thread_usecase = ThreadUsecase.new
+        @serializer = Serializer.new
     end
 
-    def index(req)
-        res = @thread_usecase.get_threads()
-        @serializer.serialize(res)
+    def index(req, params)
+        @serializer.serialize(@thread_usecase.get_threads(params))
+    end
+    
+    def show(req, params)
+        @serializer.serialize(@thread_usecase.get_thread(params[':id'].to_i))
     end
 
     def save(req)
-        body = JSON.parse(req.body)
-        thread = @thread_usecase.create(body)
-        res.status = 201
-        res.body = JSON.generate(thread)
+        @serializer.serialize(@thread_usecase.save_thread(JSON.parse(req.body.read)))
+    end
+    
+    
+    def update(req, params)
+        @serializer.serialize(@thread_usecase.update_thread(JSON.parse(req.body.read), params[':id'].to_i))
     end
 
-    def show(req, id)
-        pp "===== show ====="
-        id = req.params['id']
-        pp "id: #{id}"
-        thread = @thread_usecase.show(id)
-        res.status = 200
-        res.body = JSON.generate(thread)
-    end
-
-    def update(req)
-        id = req.params['id']
-        body = JSON.parse(req.body)
-        thread = @thread_usecase.update(id, body)
-        res.status = 200
-        res.body = JSON.generate(thread)
-    end
-
-    def destroy(req)
-        id = req.params['id']
-        @thread_usecase.destroy(id)
-        res.status = 204
+    def destroy(req, params)
+        @serializer.serialize(@thread_usecase.delete_thread(params[':id'].to_i))
     end
 end
