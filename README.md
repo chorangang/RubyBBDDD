@@ -1,4 +1,4 @@
-BBSAPI!!!
+BBS API
 
 ## API Routes
 
@@ -8,7 +8,7 @@ BBSAPI!!!
 - POST api/login
 - POST api/logout
 
-### User
+### User(uninstalled)
 
 - GET api/user -> indentify with token
 - GET api/users
