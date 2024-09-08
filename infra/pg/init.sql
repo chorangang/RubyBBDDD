@@ -24,7 +24,7 @@ CREATE TABLE Comments (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     thread_id INT NOT NULL,
-    body TEXT NOT NULL,
+    body TEXT,
     upvotes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

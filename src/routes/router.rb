@@ -28,7 +28,6 @@ class Router
         matched_route = @routes.find {|route| route[:method] == http_method && path.match(route[:path])}
 
         if matched_route
-
             match_data = path.match(matched_route[:path])
 
             # マッチしたパラメータを抽出
