@@ -1,5 +1,5 @@
 class ThreadData
-    attr_accessor :id, :user_id, :title, :body, :created_at, :updated_at, user:
+    attr_accessor :id, :user_id, :title, :body, :created_at, :updated_at, :user
 
     # Repositoryから取得したデータを受け取って、DTOを生成する
     def self.from_repo(result)

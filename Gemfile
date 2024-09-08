@@ -22,7 +22,3 @@ gem 'dotenv'
 # 暗号化など
 gem 'bcrypt'
 gem 'jwt'
-
-# テスト
-gem "rspec"
-gem "rack-test"
